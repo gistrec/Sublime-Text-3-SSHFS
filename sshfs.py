@@ -12,9 +12,20 @@ def show_qp(window, choices, on_done):
 class ServersShowCommand(sublime_plugin.TextCommand):
 	window = None
 	window_id = None
+	servers = None
 
+	# Получаем индекс выбранного пункта
 	def on_done(self, index):
-		print('done')
+		# Ничего не выбрано
+		if index == -1:
+			return
+		# elif index == 0:
+		#
+		#    return
+		else:
+			server = self.servers[index]
+			# TODO!
+			return
 
 	def run(self, edit):
 		# Открываем файл с данными серверов
@@ -25,7 +36,10 @@ class ServersShowCommand(sublime_plugin.TextCommand):
 		# Массив, который будет выводиться в окне
 		choices = []
 
+		self.servers = servers = []
+
 		for server in config:
+			servers.append(server)
 			choices.append([server['user'] + '@' + server['name'], server['host']])
 		# choices.insert(0, ['Добавить новый сервер...', ''])
 
