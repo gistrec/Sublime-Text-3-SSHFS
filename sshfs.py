@@ -1,6 +1,7 @@
 import sublime
 import sublime_plugin
 import json
+import os
 
 # Показать список в новом окне
 def show_qp(window, choices, on_done):
@@ -25,6 +26,13 @@ class ServersShowCommand(sublime_plugin.TextCommand):
 		else:
 			server = self.servers[index]
 			# TODO!
+			mount_path = '"' + sublime.packages_path() + '/sshfs/mnt/' + server['name'] + '"'
+			print(mount_path)
+			os.system('mkdir -p '+ mount_path)
+			os.system('umount ' + mount_path)
+			os.system('echo "' + server['passwd'] + '" | sshfs ' + server['user'] + '@' + server['host'] + ':' + server['path'] + ' ' + mount_path + ' -o password_stdin')
+
+			print('echo "' + server['passwd'] + '" | sshfs ' + server['user'] + '@' + server['host'] + ':' + server['path'] + ' ' + mount_path + ' -o password_stdin')
 			return
 
 	def run(self, edit):
