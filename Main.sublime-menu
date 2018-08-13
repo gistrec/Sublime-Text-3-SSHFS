@@ -6,11 +6,16 @@
         [
             {
                 "caption": "Показать сервера",
-                "command": "servers_show"
+                "command": "servers_show",
             },
             {
                 "caption": "Редактировать сервера",
-                "command": "servers_edit"
+                "command": "open_file",
+                "args": {
+                    "file": "${packages}/sshfs/sshfs.sublime-settings",
+                    "platform": "Linux"
+                },
+
             }
         ]
     }
