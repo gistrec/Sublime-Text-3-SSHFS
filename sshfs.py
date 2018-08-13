@@ -1,7 +1,19 @@
-import sublime
+Hello, World!import sublime
 import sublime_plugin
 import json
 import os
+
+def open_path(folder):
+	settings = sublime.load_settings("OpenPath.sublime-settings")
+	file_manager = settings.get("file_manager", "explorer /e /root,\"{0}\"")
+	command = file_manager.format(folder)
+	call(command, shell=True)
+
+class OpenFileFolder(sublime_plugin.WindowCommand):
+ 	def run(self):
+		if self.window.active_view() is None:
+			return
+		open_path(os.path.dirname(self.window.active_view().file_name()))
 
 # Показать список в новом окне
 def show_qp(window, choices, on_done):
