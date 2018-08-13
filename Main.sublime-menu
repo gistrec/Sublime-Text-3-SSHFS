@@ -1,0 +1,6 @@
+[
+    {
+        "caption": "SSHFS",
+        "command": "prompt_sshfs"
+    }
+]
