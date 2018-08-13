@@ -1,6 +1,17 @@
 [
     {
         "caption": "SSHFS",
-        "command": "prompt_sshfs"
+        "id": "sshfs",
+        "children":
+        [
+            {
+                "caption": "Показать сервера",
+                "command": "servers_show"
+            },
+            {
+                "caption": "Редактировать сервера",
+                "command": "servers_edit"
+            }
+        ]
     }
 ]
