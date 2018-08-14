@@ -4,11 +4,16 @@ import json
 import os
 import pprint
 
-# class OpenFileFolder(sublime_plugin.WindowCommand):
-# 	def run(self):
-# 		if self.window.active_view() is None:
-# 			return
-# 		open_path(os.path.dirname(self.window.active_view().file_name()))
+# Получаем данные о сервере по пути папки для монтирования
+def getServerByDir(dir):
+	file_path = sublime.packages_path() + '/sshfs/sshfs.sublime-settings';
+	with open(file_path) as file:
+		config = json.load(file)
+
+	for server in config:
+		if server['name'] in dir:
+			return server
+	return None
 
 # Показать список в новом окне
 def show_qp(window, choices, on_done):
@@ -25,29 +30,25 @@ class OpenInConsoleCommand(sublime_plugin.TextCommand):
 		with open(file_path) as file:
 			config = json.load(file)
 
-		dir = dirs[0]
+		server = getServerByDir(dirs[0])
+		if server != None:
+			mount_path = sublime.packages_path() + '/sshfs/mnt/' + server['name']
+			dir = dir.replace(mount_path, '')
+			dir = server['path'] + dir
+			os.system('ssh -t ' + server['user'] + '@' + server['host'] +
+				       '"cd ' + dir + '; bash"')
 
-		for server in config:
-			if server['name'] in dir:
-				mount_path = sublime.packages_path() + '/sshfs/mnt/' + server['name']
-				dir = dir.replace(mount_path, '')
-				dir = server['path'] + dir
-				os.system('ssh -t ' + server['user'] + '@' + server['host'] +
-					       '"cd ' + dir + '; bash"')
+			# Команда должна быть вида
+			# gnome-terminal -e "bash -c \"sshpass -p passwd ssh -t user@host 'cmd && bash'\"; exec bash;"
 
-				# Команда должна быть вида
-				# gnome-terminal -e "bash -c \"sshpass -p passwd ssh -t user@host 'cmd && bash'\"; exec bash;"
+			cmd = "gnome-terminal -e \"bash -c \\\""
+			cmd += "sshpass -p " + server['passwd']
+			cmd += " ssh -o StrictHostKeyChecking=no -t "
+			cmd += server['user'] + '@' + server['host']
+			cmd += " 'cd " + dir + " && pwd && bash'\\\";"
+			cmd += "exec bash; \""
 
-
-				cmd = "gnome-terminal -e \"bash -c \\\""
-				cmd += "sshpass -p " + server['passwd']
-				cmd += " ssh -o StrictHostKeyChecking=no -t "
-				cmd += server['user'] + '@' + server['host']
-				cmd += " 'cd " + dir + " && pwd && bash'\\\";"
-				cmd += "exec bash; \""
-
-				os.system(cmd)
-				return
+			os.system(cmd)
 
 class ServersShowCommand(sublime_plugin.TextCommand):
 	window = None
@@ -95,3 +96,13 @@ class ServersShowCommand(sublime_plugin.TextCommand):
 		self.window_id = self.window.id()
 
 		show_qp(self.window, choices, self.on_done)
+
+class EventListener(sublime_plugin.EventListener):
+	def on_window_command(self, view, command_name, args):
+		if command_name == 'remove_folder':
+			# Получаем путь закрытой папки
+			dir = args['dirs'][0]
+
+			server = getServerByDir(dir)
+			if server != None:
+				print('Закрыта серверная папка')
