@@ -105,4 +105,6 @@ class EventListener(sublime_plugin.EventListener):
 
 			server = getServerByDir(dir)
 			if server != None:
-				print('Закрыта серверная папка')
+				mount_path = '"' + sublime.packages_path() + '/sshfs/mnt/' + server['name'] + '"'
+				os.system('fusermount -uz ' + mount_path)
+				print('Закрыта папка сервера ' + server['name'])
