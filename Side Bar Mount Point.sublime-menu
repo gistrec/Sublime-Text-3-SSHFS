@@ -1,0 +1,7 @@
+[
+    {
+    	"caption": "Открыть в консоли",
+    	"id": "clipboard",
+    	"command": "open_in_console"
+    }
+]
