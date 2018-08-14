@@ -3,6 +3,7 @@
 		"name": "Test server",
 		"host": "test.ru",
 		"user": "test",
+		"path": "/home/user"
 		"passwd": "test"
 	}
 ]
