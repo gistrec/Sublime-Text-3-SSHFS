@@ -4,16 +4,7 @@ import json
 import os
 import pprint
 
-# Получаем данные о сервере по пути папки для монтирования
-def getServerByDir(dir):
-	file_path = sublime.packages_path() + '/sshfs/sshfs.sublime-settings';
-	with open(file_path) as file:
-		config = json.load(file)
-
-	for server in config:
-		if server['name'] in dir:
-			return server
-	return None
+import sshfs.config
 
 # Показать список в новом окне
 def show_qp(window, choices, on_done):
