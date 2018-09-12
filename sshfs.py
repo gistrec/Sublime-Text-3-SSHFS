@@ -5,19 +5,13 @@ import os
 import pprint
 
 import sshfs.config
+import sshfs.utils
 
-# Показать список в новом окне
-def show_qp(window, choices, on_done):
-	def show_timeout():
-		window.show_quick_panel(choices, on_done)
-	sublime.set_timeout(show_timeout, 10)
 
-def get_view_by_group_index(window, group, index):
-	return window.views_in_group(group)[index]
 
 class OpenInConsoleCommand(sublime_plugin.TextCommand):
 	def run(self, files, dirs):
-		file_path = sublime.packages_path() + '/sshfs/sshfs.sublime-settings';
+		file_path = getServerSettingPath();
 		with open(file_path) as file:
 			config = json.load(file)
 
@@ -69,7 +63,7 @@ class ServersShowCommand(sublime_plugin.TextCommand):
 
 	def run(self, edit):
 		# Открываем файл с данными серверов
-		file_path = sublime.packages_path() + '/sshfs/sshfs.sublime-settings';
+		file_path = getServerSettingPath();
 		with open(file_path) as file:
 			config = json.load(file)
 
